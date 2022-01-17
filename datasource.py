@@ -20,7 +20,7 @@ class Datasource:
 
             for x in f:
                 line = x.strip().split(":")
-                data.append(line[:3])
+                data.append(line)
 
         finally:
             f.close()
@@ -50,7 +50,7 @@ class Datasource:
 
         try:
             f = open("customer_data.txt", "a")
-            #f.write("\n" + new_line)
+            f.write("\n" + new_line)
         
         finally:
             f.close()
