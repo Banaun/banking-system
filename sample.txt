@@ -18,6 +18,4 @@
 111128:Dorrie Padfield:19570827:1027:debit account:26500.0#1028:debit account:12300.0
 111129:Jen Medlar:19671128:1029:debit account:5800.0
 111130:Eve Mainwaring:19830423:1030:debit account:9700.0#1031:debit account:3000.0
-111131:Emil Mogensen:19870520
-111132:Vesta Schelin:19911208
-111133:Rolf Kuk:19450607
+111131:jaja:19870520

@@ -55,6 +55,36 @@ class Datasource:
         finally:
             f.close()
 
+    def update_line(self, name, ssn):
+        f = open("customer_data.txt", "r")
+        lines = f.readlines()
+
+        for line in lines:
+            if ssn in line:
+                index = lines.index(line)
+                full_name = line.split(":")[1]
+                new_line = line.replace(full_name, name)
+                lines[index] = new_line
+
+        f = open("customer_data.txt", "w")
+        f.writelines(lines)
+        f.close()    
+
+    def remove_line(self, ssn):
+        f = open("customer_data.txt", "r")
+        lines = f.readlines()
+
+        for line in lines:
+            if ssn in line:
+                index = lines.index(line)
+                del lines[index]
+                
+        f = open("customer_data.txt", "w")
+        f.writelines(lines)
+        f.close()
+
+
+
 
             
 

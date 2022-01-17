@@ -6,24 +6,29 @@ from account import Account
 bank = Bank()
 bank._load()
 for x in bank.customer_data:
-    customer = Customer(x[0], x[1].split()[0], x[1].split()[1], x[2])
-    bank.customers.append(customer)
+    try:
+        customer = Customer(x[0], x[1].split()[0], x[1].split()[1], x[2])
+        bank.customers.append(customer)
+    except:
+        print(bank.customer_data)
 
 #Load all accounts
-for x, y in bank.get_accounts().items():
+for x, y in bank.get_accounts_from_data().items():
     if len(y) > 3:
         first_account = Account(x, y[0], y[1], y[2].split("#")[0])
         second_account = Account(x, y[2].split("#")[1], y[3], y[4])
         bank.accounts.append(first_account)
         bank.accounts.append(second_account)
-    else:
+    elif len(y) == 3:
         first_account = Account(x, y[0], y[1], y[2])
         bank.accounts.append(first_account)
+    else:
+        pass
 
 #Keep running until user chooses 'Exit'
 running = True
 while running:
-    print("""Choose an option:
+    print("""\nChoose an option:
     
     1. Print all current customers.
     2. Add new customer.
@@ -53,7 +58,7 @@ while running:
         ssn = str(input("Enter SSN (8 digits): "))
 
         if len(ssn) != 8:
-            print("Incorrect number of digits.\n")
+            print("Incorrect number of digits.")
         else:
             customer_creation = bank.add_customer(first_name, last_name, ssn)
             if customer_creation:
@@ -61,15 +66,27 @@ while running:
                 print("\nCustomer with SSN {} has been added.".format(ssn))
             else:
                 print("\nCustomer with SSN {} already exists.".format(ssn))
-            print()
 
     #Change customer name
     elif choice == 3:
         print()
+        ssn = str(input("Enter SSN (8 digits): "))
+        first_name = str(input("Enter first name: "))
+        last_name = str(input("Enter last name: "))
+        
+        if bank.change_customer_name(first_name + " " + last_name, ssn):
+            print("Customer with SSN {} has been updated.".format(ssn))
+        else:
+            print("No customer with SSN {}.".format(ssn))
 
     #Delete customer
     elif choice == 4:
         print()
+        ssn = str(input("Enter SSN (8 digits): "))
+        #try:
+        print(bank.remove_customer(ssn))
+        #except:
+            #print("Something went wrong...")
 
     #Add an account to existing customer
     elif choice == 5:
@@ -77,7 +94,8 @@ while running:
 
     #Print all transactions from specific account
     elif choice == 6:
-        print()
+        for i in range(len(bank.accounts)):
+            print(bank.accounts[i])
     
     #Exit
     elif choice == 7:
