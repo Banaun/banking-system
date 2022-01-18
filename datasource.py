@@ -12,7 +12,6 @@ class Datasource:
         return ds
         
     def get_all(self):
-
         data = []
 
         try:
@@ -55,9 +54,10 @@ class Datasource:
         finally:
             f.close()
 
-    def update_line(self, name, ssn):
+    def update_line_name(self, name, ssn):
         f = open("customer_data.txt", "r")
         lines = f.readlines()
+        f.close()
 
         for line in lines:
             if ssn in line:
@@ -68,25 +68,35 @@ class Datasource:
 
         f = open("customer_data.txt", "w")
         f.writelines(lines)
-        f.close()    
+        f.close()
+
+    def update_line_acc(self, account, ssn):
+        f = open("customer_data.txt", "r")
+        lines = f.readlines()
+        f.close() 
+
+        for line in lines:
+            if ssn in line:
+                index = lines.index(line)
+                lines[index] = line.rstrip("\n")
+                lines[index] = lines[index] + account
+
+        f = open("customer_data.txt", "w")
+        f.writelines(lines)
+        f.close()
 
     def remove_line(self, ssn):
         f = open("customer_data.txt", "r")
         lines = f.readlines()
+        f.close()
 
         for line in lines:
             if ssn in line:
                 index = lines.index(line)
                 del lines[index]
-                
+  
+        lines[len(lines)-1] = lines[len(lines)-1].rstrip("\n")
+
         f = open("customer_data.txt", "w")
         f.writelines(lines)
         f.close()
-
-
-
-
-            
-
-
-

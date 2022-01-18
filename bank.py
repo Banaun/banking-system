@@ -1,4 +1,6 @@
 from datasource import Datasource
+from customer import Customer
+from account import Account
 
 class Bank:
 
@@ -11,6 +13,30 @@ class Bank:
     def _load(self):
         self.customer_data = self.ds.get_all()
 
+        #Load all customers
+        for x in self.customer_data:
+            try:
+                customer = Customer(x[0], x[1].split()[0], x[1].split()[1], x[2])
+                self.customers.append(customer)
+            except:
+                print("Something went wrong when loading {}.".format(x))
+
+        #Load all accounts
+        for y in self.customer_data:
+            self.account_data[y[0]] = y[3:]
+
+        for x, y in self.account_data.items():
+            if len(y) > 3:
+                first_account = Account(x, y[0], y[1], y[2].split("#")[0])
+                second_account = Account(x, y[2].split("#")[1], y[3], y[4])
+                self.accounts.append(first_account)
+                self.accounts.append(second_account)
+            elif len(y) == 3:
+                first_account = Account(x, y[0], y[1], y[2])
+                self.accounts.append(first_account)
+            else:
+                pass
+
     def add_customer(self, first_name, last_name, ssn):
 
         for customer in self.customer_data:
@@ -21,23 +47,55 @@ class Bank:
         name = first_name + " " + last_name
 
         self.customer_data.append([customer_id, name, ssn])
+        self.customers.append(Customer(customer_id, first_name, last_name, ssn))
         self.ds.add_line(customer_id, name, ssn)
         return True
+
+    def add_account(self, ssn):
+        account_temp = []
+        user_id = 0
+        acc_num = int(self.accounts[-1].acc_num) + 1
+        acc_type = "debit account"
+        acc_balance = 0.0
+
+        for x in self.customers:
+            if ssn == x.ssn:
+                user_id = x.id
+
+        for y in self.accounts:
+            if user_id == y.user_id:
+                account_temp.append(y)
+        
+        if len(account_temp) == 2:
+            return -1
+        elif len(account_temp) == 1:
+            acc = "#" + str(acc_num) + ":" + acc_type + ":" + str(acc_balance) + "\n"
+            new_acc = Account(user_id, acc_num, acc_type, acc_balance)
+            self.accounts.append(new_acc)
+            self.ds.update_line_acc(acc, ssn)
+            return acc_num
+        else:
+            acc = ":" + str(acc_num) + ":" + acc_type + ":" + str(acc_balance) + "\n"
+            new_acc = Account(user_id, acc_num, acc_type, acc_balance)
+            self.accounts.append(new_acc)
+            self.ds.update_line_acc(acc, ssn)
+            return acc_num
 
     def change_customer_name(self, name, ssn):
         for x in self.customers:
             if ssn == x.ssn:
                 x.first_name = name.split()[0]
                 x.last_name = name.split()[1]
-                self.ds.update_line(name, ssn)
-                self._load()
+                self.ds.update_line_name(name, ssn)
+                #self._load() VIKTIG FIX, ELLER?
                 return True
-
         return False
         
+    #FIX! Måste lägga till kontona som togs bort i return
     def remove_customer(self, ssn):
         returned_balance = 0.0
         to_remove = []
+        to_return = []
 
         for x in self.customers:
             if ssn == x.ssn:
@@ -51,6 +109,7 @@ class Bank:
 
         for y in self.accounts:
             if user_id == y.user_id:
+                to_return.append(y)
                 to_remove.append(self.accounts.index(y))
                 returned_balance += float(y.balance)
                 
@@ -58,19 +117,25 @@ class Bank:
             self.accounts.pop(r)
 
         self.ds.remove_line(ssn)
-        self._load()
-
-        return returned_balance
-
-    def get_accounts_from_data(self):
-        for x in self.customer_data:
-            self.account_data[x[0]] = x[3:]
+        self.customer_data = self.ds.get_all()
         
-        return self.account_data
+        to_return.append(returned_balance)
+        return to_return
+
+    def get_customer(self, ssn):
+        returned_list = []
+
+        for x in self.customers:
+            if ssn == x.ssn:
+                user_id = x.id
+                returned_list.append(x.first_name + " " + x.last_name)
+                returned_list.append(x.ssn)
+        for y in self.accounts:
+            if user_id == y.user_id:
+                returned_list.append(y)
+        print(returned_list)
     
     #def get_account(self, user_id):
-
-    #def add_account(self, ssn):
 
     #def deposit(self, user_id, amount):
 
@@ -79,6 +144,3 @@ class Bank:
     #def close_account(self, user_id):
 
     #def get_all_transactions_from_account(self, user_id):
-
-
-
