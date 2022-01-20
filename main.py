@@ -15,21 +15,19 @@ while running:
     5. Delete customer.
     6. Add an account to existing customer.
     7. Close account.
-    8. Print all transactions from specific account.
-    9. Exit
+    8. Withdraw/Deposit from/to account.
+    9. Print all transactions from specific account.
+    0. Exit.
     """)
-
-    allowedNumbers = '123456789'
 
     #User chooses an option
     try:
         choice = int(input("Choose an option with the corresponding number: "))
         if len(str(choice)) != 1:
             print("That's too many numbers, please refrain from using your imagination.")
-        elif str(choice) not in allowedNumbers:
-            print("You had to pick a number that's not represented... Please read before you write.")
     except ValueError:
         print("That's not a number, dummy.")
+
     #Print all current customers
     if choice == 1:
         print("\nName and SSN")
@@ -42,15 +40,8 @@ while running:
             ssn = int(input("\nEnter SSN (8 digits): "))
             while(len(str(ssn)) != 8):
                 ssn = int(input("Enter SSN (8 digits): "))
-            try:
-                acc_num = int(input("Enter account number (4 digits): "))
-                while(len(str(acc_num)) != 4):
-                    acc_num = int(input("Enter account number (4 digits): "))
             
-                print(bank.get_account(ssn, acc_num))
-
-            except ValueError:
-                print("Account number can only contain numbers.")
+            print(bank.get_customer(ssn))
             
         except ValueError:
             print("SSN can only contain numbers.")
@@ -121,7 +112,7 @@ while running:
             if acc_num != -1:
                 print("Account created with account number {}.".format(acc_num))
             else:
-                print("Failed to add account to customer with SSN {}.".format(ssn))
+                print("Account limit exceeded for customer with SSN {}.".format(ssn))
         except ValueError:
             print("SSN can only contain numbers.")   
 
@@ -144,14 +135,63 @@ while running:
         except ValueError:
             print("SSN can only contain numbers.")
 
-    #Print all transactions from specific account
+    #Withdraw/Deposit
     elif choice == 8:
+        print("""\nChoose an option:
+    
+        1. Withdraw from chosen account.
+        2. Deposit to chosen account.
+        """)
+        allowedNumbers = '12'
+        try:
+            w_d_choice = int(input("Choose an option with the corresponding number: "))
+            if len(str(w_d_choice)) != 1:
+                print("That's too many numbers, please refrain from using your imagination.")
+            elif str(w_d_choice) not in allowedNumbers:
+                print("You had to pick a number that's not represented... Please read before you write.")
+        except ValueError:
+            print("That's not a number, dummy.")
+        
+        #Withdraw/Deposit from/to account
+        if w_d_choice == 1 or 2:
+            try:
+                ssn = int(input("\nEnter SSN (8 digits): "))
+                while(len(str(ssn)) != 8):
+                    ssn = int(input("Enter SSN (8 digits): "))
+
+                try:
+                    acc_num = int(input("Enter account number (4 digits): "))
+                    while(len(str(acc_num)) != 4):
+                        acc_num = int(input("Enter account number (4 digits): "))
+
+                    try:
+                        amount = float(input("Enter amount: "))
+                    
+                        if w_d_choice == 1:
+                            if bank.withdraw(ssn, acc_num, amount):
+                                print("JAHA")
+                            else:
+                                print("NÄHÄ")
+                        else:
+                            if bank.deposit(ssn, acc_num, amount):
+                                print("JADÅ")
+                            else:
+                                print("NÄDÅ")
+
+                    except ValueError:
+                        print("The amount must be specified with numbers only.")
+                except ValueError:
+                    print("Account number can only contain numbers.")
+            except ValueError:
+                print("SSN can only contain numbers.")
+
+    #Print all transactions from specific account
+    elif choice == 9:
         ssn = int(input("\nEnter SSN (8 digits): "))
         acc_num = int(input("Enter Account number: "))
         print(bank.close_account(str(ssn), str(acc_num)))
     
     #Exit
-    elif choice == 9:
-        print()
-        print("Exiting program...")
+    elif choice == 0:
+        print("\nExiting program...")
         running = False

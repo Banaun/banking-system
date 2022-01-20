@@ -51,6 +51,7 @@ class Bank:
         self.ds.add_line(customer_id, name, ssn)
         return True
 
+    #MÅSTE FIXA ACC_NUM!!!
     def add_account(self, ssn):
         account_temp = []
         user_id = 0
@@ -152,23 +153,27 @@ class Bank:
         returned_balance = 0
 
         for x in self.customers:
-            if str(ssn) == x.ssn:
+            if str(ssn) == str(x.ssn):
                 for y in self.accounts:
-                    if str(acc_num) == y.acc_num:
+                    if str(acc_num) == str(y.acc_num):
                         returned_balance = y.balance
-                        self.account_data.pop(x.id)
+                        #self.account_data.pop(x.id)
                         to_remove.append(self.accounts.index(y))
                 if not to_remove:
-                    return "\nNo account found with Account number {}.".format(acc_num)
+                    return "\nNo account found with account number {}.".format(acc_num)
                 else:
                     for r in to_remove:
-                        self.accounts.pop(r)
-                        return "\nAccount closed. ${} refunded.".format(returned_balance)
+                        if self.ds.remove_line_acc(acc_num):
+                            self.accounts.pop(r)
+                            return "\nAccount closed. ${} refunded.".format(returned_balance)
+                        else:
+                            return "\nCould not remove account. Please contact customer service for further assistance."
         return "\nNo customer found with SSN {}".format(ssn)
         
-    def deposit(self, user_id, amount):
-        print("hej")
+    def deposit(self, ssn, acc_num, amount):
+        return False
 
-    #def withdraw(self, user_id, amount):
+    def withdraw(self, ssn, acc_num, amount):
+        return True
 
     #def get_all_transactions_from_account(self, user_id):
