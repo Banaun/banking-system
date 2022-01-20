@@ -106,8 +106,9 @@ while running:
 
     #Print all transactions from specific account
     elif choice == 6:
-        for i in range(len(bank.accounts)):
-            print(bank.accounts[i])
+        ssn = int(input("\nEnter SSN (8 digits): "))
+        acc_num = int(input("Enter Account number: "))
+        print(bank.get_account(str(ssn), str(acc_num)))
     
     #Exit
     elif choice == 7:

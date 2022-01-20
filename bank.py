@@ -40,7 +40,7 @@ class Bank:
     def add_customer(self, first_name, last_name, ssn):
 
         for customer in self.customer_data:
-            if ssn in customer:
+            if str(ssn) in customer:
                 return False
             
         customer_id = int(self.ds.get_last_id()) + 1
@@ -59,7 +59,7 @@ class Bank:
         acc_balance = 0.0
 
         for x in self.customers:
-            if ssn == x.ssn:
+            if str(ssn) == x.ssn:
                 user_id = x.id
 
         for y in self.accounts:
@@ -83,22 +83,21 @@ class Bank:
 
     def change_customer_name(self, name, ssn):
         for x in self.customers:
-            if ssn == x.ssn:
+            if str(ssn) == x.ssn:
                 x.first_name = name.split()[0]
                 x.last_name = name.split()[1]
                 self.ds.update_line_name(name, ssn)
-                #self._load() VIKTIG FIX, ELLER?
+                self.customer_data = self.ds.get_all()
                 return True
         return False
         
-    #FIX! Måste lägga till kontona som togs bort i return
     def remove_customer(self, ssn):
         returned_balance = 0.0
         to_remove = []
         to_return = []
 
         for x in self.customers:
-            if ssn == x.ssn:
+            if str(ssn) == x.ssn:
                 index = self.customers.index(x)
                 user_id = x.id
                 try:
@@ -126,21 +125,44 @@ class Bank:
         returned_list = []
 
         for x in self.customers:
-            if ssn == x.ssn:
-                user_id = x.id
+            if str(ssn) == x.ssn:
                 returned_list.append(x.first_name + " " + x.last_name)
                 returned_list.append(x.ssn)
-        for y in self.accounts:
-            if user_id == y.user_id:
-                returned_list.append(y)
-        print(returned_list)
+            
+                for y in self.accounts:
+                    if x.id == y.user_id:
+                        account = "Account number: " + str(y.acc_num) + ", Balance: " + str(y.balance)
+                        returned_list.append(account)
+                
+                return returned_list 
+            
+        return "\nNo customer found with SSN {}".format(ssn)
     
-    #def get_account(self, user_id):
+    def get_account(self, ssn, acc_num):
+        for x in self.customers:
+            if str(ssn) == x.ssn:
+                for y in self.accounts:
+                    if str(acc_num) == y.acc_num:
+                        return "\nAccount number: {}\nBalance: {}\nAccount type: {}".format(acc_num, y.balance, y.acc_type)
+                return "\nNo account found with Account number {}.".format(acc_num)
+        return "\nNo customer found with SSN {}".format(ssn)
+
+    def close_account(self, ssn, acc_num):
+        to_remove = []
+
+        for x in self.customers:
+            if str(ssn) == x.ssn:
+                for y in self.accounts:
+                    if str(acc_num) == y.acc_num:
+                        self.account_data.pop(x.id)
+                        to_remove.append(self.accounts.index(y))
+                        
+                for r in reversed(to_remove):
+                    self.accounts.pop(r)
+
 
     #def deposit(self, user_id, amount):
 
     #def withdraw(self, user_id, amount):
-
-    #def close_account(self, user_id):
 
     #def get_all_transactions_from_account(self, user_id):
