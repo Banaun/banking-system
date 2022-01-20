@@ -12,4 +12,4 @@ class Customer:
         self.ssn = ssn
     
     def __str__(self):
-        return self.first_name + " " + self.last_name + " - " + self.ssn
+        return self.first_name + " " + self.last_name + " - " + str(self.ssn)

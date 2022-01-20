@@ -7,32 +7,37 @@ class Bank:
     ds = Datasource()
     customers = []
     customer_data = []
-    account_data = {}
     accounts = []
 
     def _load(self):
         self.customer_data = self.ds.get_all()
+        self._load_customers()
+        self._load_accounts()
 
-        #Load all customers
+    #Load all customers    
+    def _load_customers(self):
         for x in self.customer_data:
             try:
-                customer = Customer(x[0], x[1].split()[0], x[1].split()[1], x[2])
+                customer = Customer(int(x[0]), x[1].split()[0], x[1].split()[1], int(x[2]))
                 self.customers.append(customer)
             except:
                 print("Something went wrong when loading {}.".format(x))
 
-        #Load all accounts
-        for y in self.customer_data:
-            self.account_data[y[0]] = y[3:]
+    #Load all accounts
+    def _load_accounts(self):
+        account_data = {}
 
-        for x, y in self.account_data.items():
+        for x in self.customer_data:
+            account_data[x[0]] = x[3:]
+
+        for x, y in account_data.items():
             if len(y) > 3:
-                first_account = Account(x, y[0], y[1], y[2].split("#")[0])
-                second_account = Account(x, y[2].split("#")[1], y[3], y[4])
+                first_account = Account(int(x), int(y[0]), y[1], float(y[2].split("#")[0]))
+                second_account = Account(int(x), int(y[2].split("#")[1]), y[3], float(y[4]))
                 self.accounts.append(first_account)
                 self.accounts.append(second_account)
             elif len(y) == 3:
-                first_account = Account(x, y[0], y[1], y[2])
+                first_account = Account(int(x), int(y[0]), y[1], float(y[2]))
                 self.accounts.append(first_account)
             else:
                 pass
@@ -51,40 +56,37 @@ class Bank:
         self.ds.add_line(customer_id, name, ssn)
         return True
 
-    #MÅSTE FIXA ACC_NUM!!!
     def add_account(self, ssn):
         account_temp = []
-        user_id = 0
-        acc_num = int(self.accounts[-1].acc_num) + 1
+        acc_num = self.get_new_acc_num()
         acc_type = "debit account"
         acc_balance = 0.0
 
         for x in self.customers:
-            if str(ssn) == x.ssn:
-                user_id = x.id
-
-        for y in self.accounts:
-            if user_id == y.user_id:
-                account_temp.append(y)
-        
-        if len(account_temp) == 2:
-            return -1
-        elif len(account_temp) == 1:
-            acc = "#" + str(acc_num) + ":" + acc_type + ":" + str(acc_balance) + "\n"
-            new_acc = Account(user_id, acc_num, acc_type, acc_balance)
-            self.accounts.append(new_acc)
-            self.ds.update_line_acc(acc, ssn)
-            return acc_num
-        else:
-            acc = ":" + str(acc_num) + ":" + acc_type + ":" + str(acc_balance) + "\n"
-            new_acc = Account(user_id, acc_num, acc_type, acc_balance)
-            self.accounts.append(new_acc)
-            self.ds.update_line_acc(acc, ssn)
-            return acc_num
+            if ssn == x.ssn:
+                for y in self.accounts:
+                    if x.id == y.user_id:
+                        account_temp.append(y)
+                    
+                if len(account_temp) == 2:
+                    return -1
+                elif len(account_temp) == 1:
+                    acc_line = "#" + str(acc_num) + ":" + acc_type + ":" + str(acc_balance) + "\n"
+                    new_acc = Account(x.id, acc_num, acc_type, acc_balance)
+                    self.accounts.append(new_acc)
+                    self.ds.update_line_acc(acc_line, ssn)
+                    return acc_num
+                else:
+                    acc_line = ":" + str(acc_num) + ":" + acc_type + ":" + str(acc_balance) + "\n"
+                    new_acc = Account(x.id, acc_num, acc_type, acc_balance)
+                    self.accounts.append(new_acc)
+                    self.ds.update_line_acc(acc_line, ssn)
+                    return acc_num
+        return -1
 
     def change_customer_name(self, name, ssn):
         for x in self.customers:
-            if str(ssn) == x.ssn:
+            if ssn == x.ssn:
                 x.first_name = name.split()[0]
                 x.last_name = name.split()[1]
                 self.ds.update_line_name(name, ssn)
@@ -98,66 +100,60 @@ class Bank:
         to_return = []
 
         for x in self.customers:
-            if str(ssn) == x.ssn:
+            if ssn == x.ssn:
                 index = self.customers.index(x)
-                user_id = x.id
-                try:
-                    self.account_data.pop(user_id)
-                except:
-                    pass
                 self.customers.pop(index)
 
-        for y in self.accounts:
-            if user_id == y.user_id:
-                to_return.append(y)
-                to_remove.append(self.accounts.index(y))
-                returned_balance += float(y.balance)
+                for y in self.accounts:
+                    if x.id == y.user_id:
+                        to_return.append(y)
+                        to_remove.append(self.accounts.index(y))
+                        returned_balance += y.balance
                 
-        for r in reversed(to_remove):
-            self.accounts.pop(r)
+                for r in reversed(to_remove):
+                    self.accounts.pop(r)
 
-        self.ds.remove_line(ssn)
-        self.customer_data = self.ds.get_all()
+                self.ds.remove_line(ssn)
+                self.customer_data = self.ds.get_all()
         
-        to_return.append(returned_balance)
+                to_return.append(returned_balance)
         return to_return
 
     def get_customer(self, ssn):
         returned_list = []
 
         for x in self.customers:
-            if str(ssn) == x.ssn:
+            if ssn == x.ssn:
                 returned_list.append(x.first_name + " " + x.last_name)
                 returned_list.append(x.ssn)
-            
+
                 for y in self.accounts:
                     if x.id == y.user_id:
                         account = "Account number: " + str(y.acc_num) + ", Balance: " + str(y.balance)
                         returned_list.append(account)
-                
+
                 return returned_list
             
         return "\nNo customer found with SSN {}".format(ssn)
     
     def get_account(self, ssn, acc_num):
         for x in self.customers:
-            if str(ssn) == x.ssn:
+            if ssn == x.ssn:
                 for y in self.accounts:
-                    if str(acc_num) == y.acc_num:
+                    if acc_num == y.acc_num and x.id == y.user_id:
                         return "\nAccount number: {}\nBalance: {}\nAccount type: {}".format(acc_num, y.balance, y.acc_type)
                 return "\nNo account found with account number {}.".format(acc_num)
         return "\nNo customer found with SSN {}".format(ssn)
 
     def close_account(self, ssn, acc_num):
         to_remove = []
-        returned_balance = 0
+        returned_balance = 0.0
 
         for x in self.customers:
-            if str(ssn) == str(x.ssn):
+            if ssn == x.ssn:
                 for y in self.accounts:
-                    if str(acc_num) == str(y.acc_num):
+                    if acc_num == y.acc_num and x.id == y.user_id:
                         returned_balance = y.balance
-                        #self.account_data.pop(x.id)
                         to_remove.append(self.accounts.index(y))
                 if not to_remove:
                     return "\nNo account found with account number {}.".format(acc_num)
@@ -177,3 +173,19 @@ class Bank:
         return True
 
     #def get_all_transactions_from_account(self, user_id):
+
+    def get_new_acc_num(self):
+        acc_numbers = []
+        max_num = 0
+
+        for x in self.accounts:
+            acc_numbers.append(x.acc_num)
+
+        for i in acc_numbers:
+            if int(i) > max_num:
+                max_num = int(i)
+
+        return max_num + 1
+
+    def test(self):
+        self.ds.get_alla()

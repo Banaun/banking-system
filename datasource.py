@@ -11,6 +11,21 @@ class Datasource:
         
         return ds
         
+    def get_alla(self):
+        data = []
+
+        try:
+            f = open("customer_data.txt", "r")
+            for x in f:
+                line = x.strip().split(":")
+                data.append(line)
+        finally:
+            f.close()
+
+        print(data)
+        for x in data:
+            for y in x:
+                print(type(y))
     #Get all lines from file and return list with separated values
     def get_all(self):
         data = []
@@ -44,6 +59,10 @@ class Datasource:
     def add_line(self, id, name, ssn):
         new_line = str(id) + ":" + name + ":" + str(ssn)
 
+        f = open("customer_data.txt", "r")
+        lines = f.readlines()
+        f.close()
+
         try:
             f = open("customer_data.txt", "a")
             f.write("\n" + new_line)
@@ -57,7 +76,7 @@ class Datasource:
         f.close()
 
         for line in lines:
-            if ssn in line:
+            if str(ssn) in line:
                 index = lines.index(line)
                 full_name = line.split(":")[1]
                 new_line = line.replace(full_name, name)
@@ -74,7 +93,7 @@ class Datasource:
         f.close() 
 
         for line in lines:
-            if ssn in line:
+            if str(ssn) in line:
                 index = lines.index(line)
                 lines[index] = line.rstrip("\n")
                 lines[index] = lines[index] + account
@@ -90,7 +109,7 @@ class Datasource:
         f.close()
 
         for line in lines:
-            if ssn in line:
+            if str(ssn) in line:
                 index = lines.index(line)
                 del lines[index]
   
@@ -121,11 +140,14 @@ class Datasource:
                     else:
                         new_line_acc = ":" + second_acc[0] + ":" + second_acc[1] + ":" + second_acc[2]
                     new_line = new_line_customer + new_line_acc
-                    print(new_line)
+
                 else:
                     customer_info = line.strip().split(":")[:3]
                     new_line = customer_info[0] + ":" + customer_info[1] + ":" + customer_info[2]
                 
+                if line != lines[-1]:
+                    new_line += "\n"
+                    
                 lines[index] = new_line
                 f = open("customer_data.txt", "w")
                 f.writelines(lines)
