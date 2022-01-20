@@ -166,8 +166,8 @@ class Bank:
                         return "\nAccount closed. ${} refunded.".format(returned_balance)
         return "\nNo customer found with SSN {}".format(ssn)
         
-    #def deposit(self, user_id, amount):
-
+    def deposit(self, user_id, amount):
+        print("hej")
 
     #def withdraw(self, user_id, amount):
 

@@ -19,7 +19,7 @@ while running:
     9. Exit
     """)
 
-    allowedNumbers = '12345678'
+    allowedNumbers = '123456789'
 
     #User chooses an option
     try:
