@@ -134,7 +134,7 @@ class Bank:
                         account = "Account number: " + str(y.acc_num) + ", Balance: " + str(y.balance)
                         returned_list.append(account)
                 
-                return returned_list 
+                return returned_list
             
         return "\nNo customer found with SSN {}".format(ssn)
     
@@ -144,24 +144,30 @@ class Bank:
                 for y in self.accounts:
                     if str(acc_num) == y.acc_num:
                         return "\nAccount number: {}\nBalance: {}\nAccount type: {}".format(acc_num, y.balance, y.acc_type)
-                return "\nNo account found with Account number {}.".format(acc_num)
+                return "\nNo account found with account number {}.".format(acc_num)
         return "\nNo customer found with SSN {}".format(ssn)
 
     def close_account(self, ssn, acc_num):
         to_remove = []
+        returned_balance = 0
 
         for x in self.customers:
             if str(ssn) == x.ssn:
                 for y in self.accounts:
                     if str(acc_num) == y.acc_num:
+                        returned_balance = y.balance
                         self.account_data.pop(x.id)
                         to_remove.append(self.accounts.index(y))
-                        
-                for r in reversed(to_remove):
-                    self.accounts.pop(r)
-
-
+                if not to_remove:
+                    return "\nNo account found with Account number {}.".format(acc_num)
+                else:
+                    for r in to_remove:
+                        self.accounts.pop(r)
+                        return "\nAccount closed. ${} refunded.".format(returned_balance)
+        return "\nNo customer found with SSN {}".format(ssn)
+        
     #def deposit(self, user_id, amount):
+
 
     #def withdraw(self, user_id, amount):
 
