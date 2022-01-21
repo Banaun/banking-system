@@ -20,4 +20,3 @@
 111130:Eve Mainwaring:19830423:1030:debit account:9700.0#1031:debit account:3000.0
 111131:Emil Mogensen:19870520:1032:debit account:0.0#1033:debit account:0.0
 111132:Vesta Schelin:19911208:1036:debit account:0.0
-111133:Rolf Kuk:19870521

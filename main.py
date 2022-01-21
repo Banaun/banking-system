@@ -166,17 +166,19 @@ while running:
 
                     try:
                         amount = float(input("Enter amount: "))
-                    
-                        if w_d_choice == 1:
-                            if bank.withdraw(ssn, acc_num, amount):
-                                print("JAHA")
+                        if amount > 0:
+                            if w_d_choice == 1:
+                                if bank.withdraw(ssn, acc_num, amount):
+                                    print("\n${} withdrawn from account {}.".format(amount, acc_num))
+                                else:
+                                    print("\nWithdrawal declined.")
                             else:
-                                print("NÄHÄ")
+                                if bank.deposit(ssn, acc_num, amount):
+                                    print("\n${} deposited to account {}.".format(amount, acc_num))
+                                else:
+                                    print("\nDeposit declined.")
                         else:
-                            if bank.deposit(ssn, acc_num, amount):
-                                print("JADÅ")
-                            else:
-                                print("NÄDÅ")
+                            print("You can only withdraw/deposit a positive amount.")
 
                     except ValueError:
                         print("The amount must be specified with numbers only.")
@@ -189,7 +191,14 @@ while running:
     elif choice == 9:
         ssn = int(input("\nEnter SSN (8 digits): "))
         acc_num = int(input("Enter Account number: "))
-    
+
+        returned_transactions = bank.get_all_transactions_from_account(ssn, acc_num)
+        if returned_transactions == -1:
+            print("Could not print transactions from account number {}.".format(acc_num))
+        else:
+            for x in returned_transactions:
+                print(x)
+
     #Exit
     elif choice == 0:
         #print("\nExiting program...")

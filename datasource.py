@@ -1,37 +1,25 @@
 class Datasource:
 
+    file_customers = "customer_data.txt"
+    file_transactions = "transactions_data.txt"
+
     def datasource_conn(self):
         try:
-            f = open("customer_data.txt")
-            ds = (True, "Connection successful", "customer_data.txt")
+            f = open(self.file_customers)
+            ds = (True, "Connection successful", self.file_customers)
         except:
-            ds = (False, "Connection failed", "customer_data.txt")
+            ds = (False, "Connection failed", self.file_customers)
         finally:
-            f.close("customer_data.txt")
+            f.close(self.file_customers)
         
         return ds
-        
-    def get_alla(self):
+
+    #Get all lines from customers file and return list with separated values
+    def get_all_customers(self):
         data = []
 
         try:
-            f = open("customer_data.txt", "r")
-            for x in f:
-                line = x.strip().split(":")
-                data.append(line)
-        finally:
-            f.close()
-
-        print(data)
-        for x in data:
-            for y in x:
-                print(type(y))
-    #Get all lines from file and return list with separated values
-    def get_all(self):
-        data = []
-
-        try:
-            f = open("customer_data.txt", "r")
+            f = open(self.file_customers, "r")
             for x in f:
                 line = x.strip().split(":")
                 data.append(line)
@@ -40,12 +28,26 @@ class Datasource:
 
         return data
 
-    #Get highest id from lines in file
+    #Get all lines from transactions file and return list with separated values
+    def get_all_transactions(self):
+        data = []
+
+        try:
+            f = open(self.file_transactions, "r")
+            for x in f:
+                line = x.strip().split("#")
+                data.append(line)
+        finally:
+            f.close()
+
+        return data
+
+    #Get highest id from lines in customers file
     def get_last_id(self):
         id = []
 
         try:
-            f = open("customer_data.txt", "r")
+            f = open(self.file_customers, "r")
             for x in f:
                 line = x.strip().split(":")
                 id.append(line[0])
@@ -55,23 +57,19 @@ class Datasource:
         
         return last_id
     
-    #Add new line
-    def add_line(self, id, name, ssn):
+    #Add new line in customers file
+    def add_line_customers(self, id, name, ssn):
         new_line = str(id) + ":" + name + ":" + str(ssn)
 
-        f = open("customer_data.txt", "r")
-        lines = f.readlines()
-        f.close()
-
         try:
-            f = open("customer_data.txt", "a")
+            f = open(self.file_customers, "a")
             f.write("\n" + new_line)
         finally:
             f.close()
 
-    #Update name in line
+    #Update name in customers file
     def update_line_name(self, name, ssn):
-        f = open("customer_data.txt", "r")
+        f = open(self.file_customers, "r")
         lines = f.readlines()
         f.close()
 
@@ -82,13 +80,13 @@ class Datasource:
                 new_line = line.replace(full_name, name)
                 lines[index] = new_line
 
-        f = open("customer_data.txt", "w")
+        f = open(self.file_customers, "w")
         f.writelines(lines)
         f.close()
 
-    #Add account to line
+    #Add account to line in customers file
     def update_line_acc(self, account, ssn):
-        f = open("customer_data.txt", "r")
+        f = open(self.file_customers, "r")
         lines = f.readlines()
         f.close() 
 
@@ -98,13 +96,13 @@ class Datasource:
                 lines[index] = line.rstrip("\n")
                 lines[index] = lines[index] + account
 
-        f = open("customer_data.txt", "w")
+        f = open(self.file_customers, "w")
         f.writelines(lines)
         f.close()
 
-    #Remove entire line
+    #Remove entire line in customers file
     def remove_line(self, ssn):
-        f = open("customer_data.txt", "r")
+        f = open(self.file_customers, "r")
         lines = f.readlines()
         f.close()
 
@@ -115,13 +113,13 @@ class Datasource:
   
         lines[len(lines)-1] = lines[len(lines)-1].rstrip("\n")
 
-        f = open("customer_data.txt", "w")
+        f = open(self.file_customers, "w")
         f.writelines(lines)
         f.close()
 
-    #Remove single account from line
+    #Remove single account from line in customers file
     def remove_line_acc(self, acc_num):
-        f = open("customer_data.txt", "r")
+        f = open(self.file_customers, "r")
         lines = f.readlines()
         f.close()
 
@@ -149,9 +147,17 @@ class Datasource:
                     new_line += "\n"
                     
                 lines[index] = new_line
-                f = open("customer_data.txt", "w")
+                f = open(self.file_customers, "w")
                 f.writelines(lines)
                 f.close()
                 return True
         return False
                 
+    def add_line_transactions(self, user_id, acc_num, amount, date):
+        new_line = str(user_id) + "#" + str(acc_num) + "#" + str(amount) + "#" + str(date)
+
+        try:
+            f = open(self.file_transactions, "a")
+            f.write("\n" + new_line)
+        finally:
+            f.close()
