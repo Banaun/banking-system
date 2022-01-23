@@ -155,7 +155,7 @@ class Bank:
                 return returned_list
             
         return "\nNo customer found with SSN {}".format(ssn)
-    
+
     #Return chosen account
     def get_account(self, ssn, acc_num):
         for x in self.customers:
@@ -198,6 +198,7 @@ class Bank:
                         new_deposit = Transaction(x.id, acc_num, amount, date)
                         self.transactions.append(new_deposit)
                         y.balance += amount
+                        self.ds.update_line_transaction(acc_num, amount)
                         self.ds.add_line_transactions(x.id, acc_num, amount, date)
                         return True
         return False
@@ -213,6 +214,7 @@ class Bank:
                             new_withdrawal = Transaction(x.id, acc_num, amount * -1, date)
                             self.transactions.append(new_withdrawal)
                             y.balance -= amount
+                            self.ds.update_line_transaction(acc_num, amount * -1)
                             self.ds.add_line_transactions(x.id, acc_num, amount, date)
                             return True
         return False
@@ -249,5 +251,3 @@ class Bank:
         now = datetime.datetime.now()
         date = now.strftime("%Y-%m-%d %H:%M:%S")
         return date
-
-    #def test(self):

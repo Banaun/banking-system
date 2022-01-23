@@ -100,6 +100,39 @@ class Datasource:
         f.writelines(lines)
         f.close()
 
+    def update_line_transaction(self, acc_num, amount):
+        f = open(self.file_customers, "r")
+        lines = f.readlines()
+        f.close()
+
+        for line in lines:
+            if str(acc_num) in line:
+                index = lines.index(line)
+                if line.split(":")[3] == str(acc_num):
+                    if "#" in line:
+                        current_amount = float(line.split(":")[5].split("#")[0])
+                        current_amount += amount
+                        new_line = line.replace(line.split(":")[5], str(current_amount) + "#" + line.split(":")[5].split("#")[1])
+                        lines[index] = new_line
+                    else:
+                        current_amount = float(line.split(":")[5])
+                        current_amount += amount
+                        new_line = line.replace(line.split(":")[5], str(current_amount))
+                        if line != lines[-1]:
+                            new_line += "\n"
+                        lines[index] = new_line
+                elif line.split(":")[5].split("#")[1] == str(acc_num):
+                    current_amount = float(line.split(":")[-1])
+                    current_amount += amount
+                    new_line = line.replace(line.split(":")[-1], str(current_amount))
+                    if line != lines[-1]:
+                        new_line += "\n"
+                    lines[index] = new_line
+
+        f = open(self.file_customers, "w")
+        f.writelines(lines)
+        f.close()
+
     #Remove entire line in customers file
     def remove_line(self, ssn):
         f = open(self.file_customers, "r")
