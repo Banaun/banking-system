@@ -215,7 +215,7 @@ class Bank:
                             self.transactions.append(new_withdrawal)
                             y.balance -= amount
                             self.ds.update_line_transaction(acc_num, amount * -1)
-                            self.ds.add_line_transactions(x.id, acc_num, amount, date)
+                            self.ds.add_line_transactions(x.id, acc_num, amount * -1, date)
                             return True
         return False
 
@@ -246,6 +246,18 @@ class Bank:
                 max_num = int(i)
 
         return max_num + 1
+
+    def get_all_acc_from_customer(self, ssn):
+        returned_acc_info = []
+
+        for x in self.customers:
+            if ssn == x.ssn:
+                for y in self.accounts:
+                    if x.id == y.user_id:
+                        acc_info = "Account number: " + str(y.acc_num) + ", Balance: " + str(y.balance)
+                        returned_acc_info.append(acc_info)
+        return returned_acc_info
+
         
     def get_date(self):
         now = datetime.datetime.now()

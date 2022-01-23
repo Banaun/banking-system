@@ -14,6 +14,6 @@ class Transaction:
 
     def __str__(self):
         if self.amount < 0:
-            return "\nAccount number: {}\nWithdrawal amount: {}\nDate: {}".format(self.acc_num, self.amount, self.date)
+            return "\nAccount number: {}\nWithdrawal amount: {}\nDate: {}".format(self.acc_num, self.amount * 1, self.date)
         else:
             return "\nAccount number: {}\nDeposit amount: {}\nDate: {}".format(self.acc_num, self.amount, self.date)
