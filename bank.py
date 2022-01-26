@@ -8,10 +8,8 @@ class Bank:
 
     ds = Datasource()
     customers = []
-    customer_data = []
     accounts = []
     transactions = []
-    transactions_data = []
 
     def _load(self):
         self.customer_data = self.ds.get_all_customers()
@@ -198,7 +196,7 @@ class Bank:
                         new_deposit = Transaction(x.id, acc_num, amount, date)
                         self.transactions.append(new_deposit)
                         y.balance += amount
-                        self.ds.update_line_transaction(acc_num, amount)
+                        self.ds.update_line_balance(acc_num, amount)
                         self.ds.add_line_transactions(x.id, acc_num, amount, date)
                         return True
         return False
@@ -214,7 +212,7 @@ class Bank:
                             new_withdrawal = Transaction(x.id, acc_num, amount * -1, date)
                             self.transactions.append(new_withdrawal)
                             y.balance -= amount
-                            self.ds.update_line_transaction(acc_num, amount * -1)
+                            self.ds.update_line_balance(acc_num, amount * -1)
                             self.ds.add_line_transactions(x.id, acc_num, amount * -1, date)
                             return True
         return False
@@ -246,7 +244,8 @@ class Bank:
                 max_num = int(i)
 
         return max_num + 1
-
+    
+    #Return all accounts from specific customer
     def get_all_acc_from_customer(self, ssn):
         returned_acc_info = []
 
@@ -258,7 +257,7 @@ class Bank:
                         returned_acc_info.append(acc_info)
         return returned_acc_info
 
-        
+    #Return current date and time
     def get_date(self):
         now = datetime.datetime.now()
         date = now.strftime("%Y-%m-%d %H:%M:%S")

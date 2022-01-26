@@ -100,7 +100,8 @@ class Datasource:
         f.writelines(lines)
         f.close()
 
-    def update_line_transaction(self, acc_num, amount):
+    #Update balance in customers file
+    def update_line_balance(self, acc_num, amount):
         f = open(self.file_customers, "r")
         lines = f.readlines()
         f.close()
