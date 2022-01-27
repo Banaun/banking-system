@@ -54,8 +54,8 @@ Förberedelser:
 
 Implementation:
 - Skapa en datasource-klass som hanterar var datan kommer ifrån.
-   - Skapa en .txt-fil för kundinformation och populera den med mockdata efter mallen i inlämningsuppgiften
-   - Skapa en .txt-fil för transaktioner
+   - Skapa en .txt-fil för kundinformation och populera den med mockdata efter mallen i inlämningsuppgiften.
+   - Skapa en .txt-fil för transaktioner.
    - Implementera alla funktioner som ingår i kraven för inlämningsuppgiften.
    - Se över funktionalitet med befintliga funktioner och lägg till funktioner om det behövs.
 - Skapa en bank-klass som hanterar kunder och dess konton.
