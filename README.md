@@ -48,10 +48,30 @@ Kravinsamling:
 - Sammanställ de krav som framgår i uppgiftens specifikation.
 - Rangordna kraven efter prioritet.
 
+Förberedelser:
+- Skapa nytt projekt på Github.
+- Sätt upp arbetsschema.
+
 Implementation:
 - Skapa en datasource-klass som hanterar var datan kommer ifrån.
+   - Skapa en .txt-fil för kundinformation och populera den med mockdata efter mallen i inlämningsuppgiften
+   - Skapa en .txt-fil för transaktioner
+   - Implementera alla funktioner som ingår i kraven för inlämningsuppgiften.
+   - Se över funktionalitet med befintliga funktioner och lägg till funktioner om det behövs.
 - Skapa en bank-klass som hanterar kunder och dess konton.
+   - Implementera alla funktioner som ingår i kraven för inlämningsuppgiften.
+   - Se över funktionalitet med befintliga funktioner och lägg till funktioner om det behövs.
 - Skapa en customer-klass som endast skapar objekt av kunder.
 - Skapa en account-klass som endast skapar objekt av konton.
 - Skapa en transaction-klass som endast skapar objekt av transaktioner.
 - Skapa main-scriptet som hanterar UI genom terminalen.
+   - Skapa en funktion som kör en prompt över valen som användaren har (se user stories).
+   - Skapa funktioner för upprepande kod.
+   - Säkerställ att all input kontrolleras.
+
+Kvalitetskontroll:
+- Se över all kod och korta ner där det finns utrymme.
+- Kommentera alla funktioner för smidigare navigering.
+- Leta efter buggar
+- Leta efter buggar
+- Leta efter buggar
