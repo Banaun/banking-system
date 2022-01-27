@@ -186,7 +186,8 @@ class Datasource:
                 f.close()
                 return True
         return False
-                
+
+    #Add new line in transactions file  
     def add_line_transactions(self, user_id, acc_num, amount, date):
         new_line = str(user_id) + "#" + str(acc_num) + "#" + str(amount) + "#" + str(date)
 

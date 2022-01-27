@@ -1,11 +1,5 @@
 class Transaction:
 
-    id = 0
-    user_id = 0
-    acc_num = 0
-    date = ""
-    amount = 0
-
     def __init__(self, user_id, acc_num, amount, date):
         self.user_id = user_id
         self.acc_num = acc_num

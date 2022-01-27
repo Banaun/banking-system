@@ -1,10 +1,5 @@
 class Account:
 
-    user_id = 0
-    acc_num = 0
-    balance = 0
-    acc_type = ""
-
     def __init__(self, user_id, acc_num, acc_type, balance):
         self.user_id = user_id
         self.acc_num = acc_num
